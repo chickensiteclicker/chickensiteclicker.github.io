@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>ChickenSiteClicker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #f3f3f3;
+      position: relative;
+    }
+    button {
+      font-size: 24px;
+      padding: 15px 30px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffcc00;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #e6b800;
+    }
+    #count {
+      font-size: 28px;
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 14px;
+      color: #333;
+      background: #ffffffcc;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+    }
+    footer .center-text {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 10px;
+      font-size: 14px;
+      color: #000;
+      text-align: center;
+    }
+    footer .center-text strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 3px;
+      font-size: 16px;
+    }
+    footer img {
+      height: 50px;
+      width: auto;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <button id="clicker">Кликни меня!</button>
+  <div id="count">Клики: 0</div>
+
+  <footer>
+    <img src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="left-png" />
+    <div class="center-text">
+      <strong>ChickenSiteClicker</strong>
+      ТГК КЛИКЕРА - @ChickenSiteClicker
+    </div>
+    <img src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="right-png" />
+  </footer>
+
+  <script>
+    const button = document.getElementById('clicker');
+    const countDisplay = document.getElementById('count');
+    let count = 0;
+
+    button.addEventListener('click', () => {
+      count++;
+      countDisplay.textContent = `Клики: ${count}`;
+    });
+  </script>
+</body>
+</html>

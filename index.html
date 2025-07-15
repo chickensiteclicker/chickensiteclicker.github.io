@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChickenSiteClicker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+    background: #fffbe6;
+  }
+  main {
+    flex-grow: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+  #click-btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  #player-name {
+    font-weight: bold;
+  }
+  #leaderboard {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+  }
+  footer {
+    background: #f0e68c;
+    padding: 1rem 0;
+    text-align: center;
+    position: relative;
+    font-size: 1rem;
+  }
+  footer strong {
+    display: block;
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+  .side-image {
+    position: fixed;
+    bottom: 0;
+    width: 80px;
+    height: auto;
+    opacity: 0.8;
+  }
+  #left-img {
+    left: 10px;
+  }
+  #right-img {
+    right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <h1>ChickenSiteClicker</h1>
+  <div>Привет, <span id="player-name"></span>! <br />Ваши клики: <span id="player-score">0</span></div>
+  <button id="click-btn">Кликать</button>
+
+  <div id="leaderboard">
+    <h2>Лидер:</h2>
+    <div><span id="leader-name"></span> с <span id="leader-score"></span> кликами</div>
+  </div>
+</main>
+
+<footer>
+  <strong>ChickenSiteClicker</strong>
+  ТГК КЛИКЕРА - @ChickenSiteClicker
+</footer>
+
+<img src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="Left Chicken" class="side-image" id="left-img" />
+<img src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="Right Chicken" class="side-image" id="right-img" />
+
+<script>
+  // Получаем элементы
+  const playerNameElem = document.getElementById('player-name');
+  const playerScoreElem = document.getElementById('player-score');
+  const leaderNameElem = document.getElementById('leader-name');
+  const leaderScoreElem = document.getElementById('leader-score');
+  const clickBtn = document.getElementById('click-btn');
+
+  // Ключи localStorage
+  const LS_PLAYER_NAME = 'chickenClickerPlayerName';
+  const LS_PLAYER_SCORE = 'chickenClickerPlayerScore';
+  const LS_LEADER_NAME = 'chickenClickerLeaderName';
+  const LS_LEADER_SCORE = 'chickenClickerLeaderScore';
+
+  // Получить имя игрока, если нет — запросить
+  function getPlayerName() {
+    let name = localStorage.getItem(LS_PLAYER_NAME);
+    while (!name || name.trim().length === 0) {
+      name = prompt('Введите ваше имя для ChickenSiteClicker:');
+      if (name) name = name.trim();
+    }
+    localStorage.setItem(LS_PLAYER_NAME, name);
+    return name;
+  }
+
+  // Инициализация
+  let playerName = getPlayerName();
+  playerNameElem.textContent = playerName;
+
+  // Получаем очки игрока из localStorage или 0
+  
+  let playerScore = parseInt(localStorage.getItem(LS_PLAYER_SCORE)) || 0;
+  playerScoreElem.textContent = playerScore;
+
+  // Получаем лидера из localStorage или текущий игрок, если нет
+  let leaderName = localStorage.getItem(LS_LEADER_NAME) || playerName;
+  let leaderScore = parseInt(localStorage.getItem(LS_LEADER_SCORE)) || playerScore;
+
+  // Обновить показ лидера
+  function updateLeaderDisplay() {
+    leaderNameElem.textContent = leaderName;
+    leaderScoreElem.textContent = leaderScore;
+  }
+  updateLeaderDisplay();
+
+  // Обновить лидера если нужно
+  function checkAndUpdateLeader() {
+    if (playerScore > leaderScore) {
+      leaderScore = playerScore;
+      leaderName = playerName;
+      localStorage.setItem(LS_LEADER_NAME, leaderName);
+      localStorage.setItem(LS_LEADER_SCORE, leaderScore);
+      updateLeaderDisplay();
+    }
+  }
+
+  // При клике увеличиваем счетчик и проверяем лидера
+  clickBtn.addEventListener('click', () => {
+    playerScore++;
+    playerScoreElem.textContent = playerScore;
+    localStorage.setItem(LS_PLAYER_SCORE, playerScore);
+    checkAndUpdateLeader();
+  });
+</script>
+
+</body>
+</html>

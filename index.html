@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChickenSiteClicker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0; padding: 0;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #clicker {
+    margin-top: 50px;
+  }
+  button {
+    font-size: 20px;
+    padding: 15px 30px;
+    cursor: pointer;
+  }
+  #leaderboard {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+  #footer {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+  }
+  #footer-text {
+    margin: 0 20px;
+  }
+  #footer img {
+    height: 60px;
+    width: auto;
+  }
+  #footer img.left {
+    position: fixed;
+    bottom: 0;
+    left: 10px;
+  }
+  #footer img.right {
+    position: fixed;
+    bottom: 0;
+    right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="clicker">
+  <h1>ChickenSiteClicker</h1>
+  <div id="nameInputDiv">
+    <label for="nameInput">Введите ваше имя:</label>
+    <input type="text" id="nameInput" />
+    <button id="startBtn">Начать</button>
+  </div>
+  <div id="gameDiv" style="display:none;">
+    <p>Привет, <span id="playerName"></span>! Клики: <span id="clickCount">0</span></p>
+    <button id="clickBtn">Кликни меня!</button>
+  </div>
+  <div id="leaderboard">
+    <h2>Рекорд</h2>
+    <p>Игрок: <span id="leaderName">-</span></p>
+    <p>Клики: <span id="leaderScore">0</span></p>
+  </div>
+</div>
+
+<div id="footer">
+  <img class="left" src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="left image" />
+  <div id="footer-text">ТГК КЛИКЕРА - @ChickenSiteClicker</div>
+  <img class="right" src="https://i.pinimg.com/564x/da/00/60/da0060aace12ef6e049d1d263548f6de.jpg" alt="right image" />
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // Вставьте сюда вашу firebase конфигурацию:
+  const firebaseConfig = {
+  apiKey: "AIzaSyAn4g24jcSqEOsTy8qjv5dCvawKp_hJMsY",
+  authDomain: "chickensiteclicker.firebaseapp.com",
+  databaseURL: "https://chickensiteclicker-default-rtdb.firebaseio.com",
+  projectId: "chickensiteclicker",
+  storageBucket: "chickensiteclicker.firebasestorage.app",
+  messagingSenderId: "254180330896",
+  appId: "1:254180330896:web:bea6e8c04357711f19b715",
+  measurementId: "G-GCQRBWQ4DT" 
+      };
+
+  // Инициализация Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const nameInputDiv = document.getElementById('nameInputDiv');
+  const gameDiv = document.getElementById('gameDiv');
+  const startBtn = document.getElementById('startBtn');
+  const nameInput = document.getElementById('nameInput');
+  const playerNameSpan = document.getElementById('playerName');
+  const clickBtn = document.getElementById('clickBtn');
+  const clickCountSpan = document.getElementById('clickCount');
+  const leaderNameSpan = document.getElementById('leaderName');
+  const leaderScoreSpan = document.getElementById('leaderScore');
+
+  let playerName = '';
+  let clickCount = 0;
+  let leader = {name: '-', score: 0};
+
+  // Функция обновления рекорда на странице
+  function updateLeaderUI() {
+    leaderNameSpan.textContent = leader.name;
+    leaderScoreSpan.textContent = leader.score;
+  }
+
+  // Слушаем изменения рекорда в базе
+  const leaderRef = db.ref('chickensiteclicker/leader');
+  leaderRef.on('value', snapshot => {
+    const val = snapshot.val();
+    if (val) {
+      leader = val;
+      updateLeaderUI();
+    }
+  });
+
+    startBtn.onclick = () => {
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert('Введите имя!');
+      return;
+    }
+    playerName = name;
+    playerNameSpan.textContent = playerName;
+    nameInputDiv.style.display = 'none';
+    gameDiv.style.display = 'block';
+    clickCount = 0;
+    clickCountSpan.textContent = clickCount;
+  };
+
+  clickBtn.onclick = () => {
+    clickCount++;
+    clickCountSpan.textContent = clickCount;
+    // Проверяем рекорд
+    if (clickCount > leader.score) {
+      leader = {name: playerName, score: clickCount};
+      leaderRef.set(leader);
+    }
+  };
+</script>
+
+</body>
+</html>
